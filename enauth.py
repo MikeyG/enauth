@@ -31,8 +31,8 @@ class AuthWindow(Gtk.Window):
 
         # http://midori-browser.org/docs/api/vala/midori/WebKit.WebView.html        
         self.web_view.connect('navigation-policy-decision-requested', self.webkit_navigation_callback)
+        self.web_view.connect("destroy", Gtk.main_quit)
         self.connect("delete-event", Gtk.main_quit)
-        # self.connect("delete-event", Gtk.main_quit)
         
         self.web_view.load_uri(url_callback)
 
