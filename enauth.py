@@ -3,7 +3,7 @@ from gi.repository import Gtk
 from gi.repository import WebKit
 from urlparse import parse_qsl  
 from evernote.api.client import EvernoteClient
-from keyring import set_password
+from keyring import get_password,set_password,delete_password
 
 # using everpad constants for test
 CONSUMER_KEY = 'nvbn-1422'
@@ -58,7 +58,7 @@ class AuthWindow(Gtk.Window):
 # <input id="cancelLogin" name="cancelLogin" value="Cancel" type="submit" />
 
 # Uses Evernote client to get oauth token
-def get_evernote_token(app_debug):
+def _get_evernote_token(app_debug):
     
     client = EvernoteClient(
         consumer_key=CONSUMER_KEY,
@@ -106,11 +106,39 @@ def get_evernote_token(app_debug):
     
     
     # Token available?
-    print "Done"     
-    
+    print "Done"
+    return user_token
 
+###############################################################
+#
+#            External Authorization Routines
+#
+###############################################################
+
+#####
+#  get_auth( )
+#
+# Return true if token exists
+def get_auth(self):
+    return get_password('geverpad', 'oauth_token')
+
+#####
+#  change_auth( )
+#
+# Like original Everpad, authorize toggles token, if authorized then
+# delete token, if not authorized then get token
+def change_auth(self):
+    if get_password('geverpad', 'oauth_token'):
+        delete_auth_token('geverpad', 'oauth_token')
+    else:
+        oauth_token = get_evernote_token(False)
+        if oauth_token != "None":
+            set_password('geverpad', 'oauth_token', oauth_token)
+
+
+# For testing standalone
 if (__name__ == '__main__'):
     
     app_debug = True    
-    get_evernote_token(app_debug) 
+    _get_evernote_token(app_debug) 
     
