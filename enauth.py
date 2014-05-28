@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from gi.repository import Gtk
 from gi.repository import WebKit
-from urlparse import parse_qsl  
+import urlparse  
 from evernote.api.client import EvernoteClient
 from keyring import get_password,set_password,delete_password
 
@@ -31,8 +31,8 @@ class AuthWindow(Gtk.Window):
 
         # http://midori-browser.org/docs/api/vala/midori/WebKit.WebView.html        
         self.web_view.connect('navigation-policy-decision-requested', self.webkit_navigation_callback)
-        self.web_view.connect("close-web-view", Gtk.main_quit)
-        self.web_view.connect("load-error", self.load_error_received)
+        #self.web_view.connect("close-web-view", Gtk.main_quit)
+        self.web_view.connect("resource-request-starting", self.load_error_received)
         self.web_view.connect("destroy", Gtk.main_quit)
         self.connect("delete-event", Gtk.main_quit)
         
@@ -50,8 +50,17 @@ class AuthWindow(Gtk.Window):
                 parsed_uri = dict(urlparse.parse_qsl(cb_uri))
                 self.oauth_verifier = parsed_uri['oauth_verifier']
                 self.close( )
+        
+        print "Yep"
 
         return False
+        
+    def load_error_received(self,
+       web_view, frame, resource, request,
+       response, *args
+    ):    
+        print "Here"
+        
 
 # <div class="desktop-only">
 # <input name="revoke" value="Revoke Access" type="submit" /><input name="reauthorize" value="Re-authorize" class="emphasize" type="submit" />
@@ -119,7 +128,7 @@ def _get_evernote_token(app_debug):
 #  get_auth( )
 #
 # Return true if token exists
-def get_auth(self):
+def get_auth( ):
     return get_password('geverpad', 'oauth_token')
 
 #####
@@ -127,11 +136,12 @@ def get_auth(self):
 #
 # Like original Everpad, authorize toggles token, if authorized then
 # delete token, if not authorized then get token
-def change_auth(self):
+def change_auth( ):
     if get_password('geverpad', 'oauth_token'):
-        delete_auth_token('geverpad', 'oauth_token')
+        delete_password('geverpad', 'oauth_token')
+        print "Found and deleted"
     else:
-        oauth_token = get_evernote_token(False)
+        oauth_token = _get_evernote_token(True)
         if oauth_token != "None":
             set_password('geverpad', 'oauth_token', oauth_token)
 
@@ -139,6 +149,7 @@ def change_auth(self):
 # For testing standalone
 if (__name__ == '__main__'):
     
-    app_debug = True    
-    _get_evernote_token(app_debug) 
+    #app_debug = True    
+    #_get_evernote_token(app_debug)
+    change_auth( ) 
     
