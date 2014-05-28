@@ -50,7 +50,10 @@ class AuthWindow(Gtk.Window):
                 parsed_uri = dict(urlparse.parse_qsl(cb_uri))
                 self.oauth_verifier = parsed_uri['oauth_verifier']
                 self.close( )
-        
+        else:
+            soup_message = request.get_message( )
+            
+            
         print "Yep"
 
         return False
