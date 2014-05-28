@@ -128,7 +128,7 @@ def _get_evernote_token(app_debug):
 #  get_auth( )
 #
 # Return true if token exists
-def get_auth( ):
+def get_auth_token( ):
     return get_password('geverpad', 'oauth_token')
 
 #####
@@ -136,7 +136,7 @@ def get_auth( ):
 #
 # Like original Everpad, authorize toggles token, if authorized then
 # delete token, if not authorized then get token
-def change_auth( ):
+def change_auth_token( ):
     if get_password('geverpad', 'oauth_token'):
         delete_password('geverpad', 'oauth_token')
         print "Found and deleted"
@@ -151,5 +151,5 @@ if (__name__ == '__main__'):
     
     #app_debug = True    
     #_get_evernote_token(app_debug)
-    change_auth( ) 
+    change_auth_token( ) 
     
