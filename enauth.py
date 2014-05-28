@@ -31,7 +31,7 @@ class AuthWindow(Gtk.Window):
 
         # http://midori-browser.org/docs/api/vala/midori/WebKit.WebView.html        
         self.web_view.connect('navigation-policy-decision-requested', self.webkit_navigation_callback)
-        self.web_view.connect("destroy", Gtk.main_quit)
+        #self.web_view.connect("destroy", Gtk.main_quit)
         self.connect("delete-event", Gtk.main_quit)
         
         self.web_view.load_uri(url_callback)
@@ -42,29 +42,21 @@ class AuthWindow(Gtk.Window):
     ):
         
         cb_uri = request.get_uri( ) 
-              
+        
+        # check if this is the verifier        
         if "everpad" and "oauth_verifier" in cb_uri:
             if self.oauth_verifier == "None":
                 parsed_uri = dict(urlparse.parse_qsl(cb_uri))
                 self.oauth_verifier = parsed_uri['oauth_verifier']
                 self.close( )
-        elif cb_url.startswith('http://evernote'):
-            pass
-        else:
+        # easy way to handle a cancel button on auth page        
+        elif not cb_uri.startswith('https://www.evernote.com/'):
             self.close( )
+        # just do nothing this time        
+        else:
+            pass
 
         return False
-        
-    def load_error_received(self,
-       web_view, frame, resource, request,
-       response, *args
-    ):    
-        print "Here"
-        
-
-# <div class="desktop-only">
-# <input name="revoke" value="Revoke Access" type="submit" /><input name="reauthorize" value="Re-authorize" class="emphasize" type="submit" />
-# <input id="cancelLogin" name="cancelLogin" value="Cancel" type="submit" />
 
 # Uses Evernote client to get oauth token
 def _get_evernote_token(app_debug):
@@ -108,14 +100,11 @@ def _get_evernote_token(app_debug):
         if app_debug:
             print ("user_token:          %s" % user_token)
     
-    
     elif app_debug:
         # need app error checking/message here        
         print("bad callback")    
     
-    
     # Token available?
-    print "Done"
     return user_token
 
 ###############################################################
@@ -155,8 +144,6 @@ def change_auth_token( ):
 
 # For testing standalone
 if (__name__ == '__main__'):
-    
-    #app_debug = True    
-    #_get_evernote_token(app_debug)
+
     change_auth_token( ) 
     
