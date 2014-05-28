@@ -131,7 +131,10 @@ def _get_evernote_token(app_debug):
 def get_auth_token( ):
     return get_password('geverpad', 'oauth_token')
     
-
+#####
+#  delete_auth_token( )
+#
+# Delete token from keyring
 def delete_auth_token( ):
     delete_password('geverpad', 'oauth_token')
 
