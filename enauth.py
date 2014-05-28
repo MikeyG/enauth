@@ -130,6 +130,10 @@ def _get_evernote_token(app_debug):
 # Return true if token exists
 def get_auth_token( ):
     return get_password('geverpad', 'oauth_token')
+    
+
+def delete_auth_token( ):
+    delete_password('geverpad', 'oauth_token')
 
 #####
 #  change_auth( )
