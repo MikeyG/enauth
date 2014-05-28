@@ -31,8 +31,6 @@ class AuthWindow(Gtk.Window):
 
         # http://midori-browser.org/docs/api/vala/midori/WebKit.WebView.html        
         self.web_view.connect('navigation-policy-decision-requested', self.webkit_navigation_callback)
-        #self.web_view.connect("close-web-view", Gtk.main_quit)
-        #self.web_view.connect("resource-request-starting", self.load_error_received)
         self.web_view.connect("destroy", Gtk.main_quit)
         self.connect("delete-event", Gtk.main_quit)
         
@@ -50,11 +48,10 @@ class AuthWindow(Gtk.Window):
                 parsed_uri = dict(urlparse.parse_qsl(cb_uri))
                 self.oauth_verifier = parsed_uri['oauth_verifier']
                 self.close( )
+        elif cb_url.startswith('http://evernote'):
+            pass
         else:
-            soup_message = request.get_message( )
-            
-            
-        print "Yep"
+            self.close( )
 
         return False
         
@@ -112,7 +109,7 @@ def _get_evernote_token(app_debug):
             print ("user_token:          %s" % user_token)
     
     
-    else:
+    elif app_debug:
         # need app error checking/message here        
         print("bad callback")    
     
