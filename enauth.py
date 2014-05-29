@@ -6,10 +6,12 @@ from evernote.api.client import EvernoteClient
 from keyring import get_password,set_password,delete_password
 
 # using everpad constants for test
-CONSUMER_KEY = 'nvbn-1422'
-CONSUMER_SECRET = 'c17c0979d0054310'
-SANDBOX_ENABLE = False
-
+CONSUMER_KEY = 'mgreene-8953'
+CONSUMER_SECRET = '1bd7dc2f8c2eca83'
+SANDBOX_ENABLE = True
+HOST = 'https://sandbox.evernote.com/'
+#SANDBOX_ENABLE = False
+#HOST = 'https://www.evernote.com/'
 
 class AuthWindow(Gtk.Window):
     def __init__(self, url_callback):
@@ -41,7 +43,7 @@ class AuthWindow(Gtk.Window):
        navigation_action, policy_decision, *args
     ):
         
-        cb_uri = request.get_uri( ) 
+        cb_uri = request.get_uri( )
         
         # check if this is the verifier        
         if "everpad" and "oauth_verifier" in cb_uri:
@@ -50,7 +52,7 @@ class AuthWindow(Gtk.Window):
                 self.oauth_verifier = parsed_uri['oauth_verifier']
                 self.close( )
         # easy way to handle a cancel button on auth page        
-        elif not cb_uri.startswith('https://www.evernote.com/'):
+        elif not cb_uri.startswith(HOST):
             self.close( )
         # just do nothing this time        
         else:
@@ -67,7 +69,7 @@ def _get_evernote_token(app_debug):
         sandbox=SANDBOX_ENABLE
     )    
 
-    request_token = client.get_request_token("http://everpad/")    
+    request_token = client.get_request_token("http://gevernote/")    
 
     if request_token['oauth_callback_confirmed']:
         url_callback = client.get_authorize_url(request_token)
